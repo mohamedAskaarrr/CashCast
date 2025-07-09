@@ -13,9 +13,14 @@ class UsersController extends Controller
     }
 
     public function doLogin(Request $request) {
-        if (Auth::attempt($request->only('email', 'password'))) {
-            return redirect('/dashboard');
+        try {
+            if (Auth::attempt($request->only('email', 'password'))) {
+                return redirect('/dashboard');
+            }
+        } catch (\Exception $e) {
+            return back()->withErrors(['email' => 'Login failed']);
         }
+
         return back()->withErrors(['email' => 'Invalid credentials']);
     }
 
@@ -30,14 +35,18 @@ class UsersController extends Controller
             'password' => 'required|min:6|confirmed',
         ]);
 
-        $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => bcrypt($request->password),
-        ]);
+        try {
+            $user = User::create([
+                'name' => $request->name,
+                'email' => $request->email,
+                'password' => bcrypt($request->password),
+            ]);
 
-        $this->giveUserDefaults($user);
-        Auth::login($user);
+            $this->giveUserDefaults($user);
+            Auth::login($user);
+        } catch (\Exception $e) {
+            return back()->withErrors(['email' => 'Registration failed']);
+        }
 
         return redirect('/dashboard');
     }
