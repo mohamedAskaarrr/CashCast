@@ -12,14 +12,21 @@ class BudgetController extends Controller
 {
     //use App\Models\Transaction;
 
-public function dashboard() {
-    $user = Auth::user();
+    public function dashboard()
+{
+    if (!auth()->check()) {
+        return redirect('/login');
+    }
 
-    $transactions = Transaction::where('user_id', $user->id)->latest()->get();
-    $budgets = BudgetPlan::where('user_id', $user->id)->get();
-    $trends = Trend::where('user_id', $user->id)->get();
+    $user = auth()->user();
+
+    $transactions = $user->transactions()->latest()->get();
+    $budgets = $user->budgetPlans()->get();
+    $trends = $user->trends()->get();
 
     return view('dashboard', compact('transactions', 'budgets', 'trends'));
 }
+
+    
 
 }
