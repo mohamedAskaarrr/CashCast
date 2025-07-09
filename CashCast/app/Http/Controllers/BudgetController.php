@@ -13,19 +13,22 @@ class BudgetController extends Controller
     //use App\Models\Transaction;
 
     public function dashboard()
-{
-    if (!auth()->check()) {
-        return redirect('/login');
+    {
+        if (!auth()->check()) {
+            return redirect('/login');
+        }
+
+        try {
+            $user         = auth()->user();
+            $transactions = $user->transactions()->latest()->get();
+            $budgets      = $user->budgetPlans()->get();
+            $trends       = $user->trends()->get();
+        } catch (\Exception $e) {
+            return back()->with('error', 'Failed to load dashboard data.');
+        }
+
+        return view('dashboard', compact('transactions', 'budgets', 'trends'));
     }
-
-    $user = auth()->user();
-
-    $transactions = $user->transactions()->latest()->get();
-    $budgets = $user->budgetPlans()->get();
-    $trends = $user->trends()->get();
-
-    return view('dashboard', compact('transactions', 'budgets', 'trends'));
-}
 
     
 
