@@ -1,5 +1,5 @@
 <p align="center">
-    <img src="https://laravel.com/img/logomark.min.svg" width="100" alt="Logo">
+    <img src="https://github.com/mohamedAskaarrr/CashCast/blob/main/cashcast.jpeg" width="100" alt="Logo">
 </p>
 
 <h1 align="center">CashCast</h1>
