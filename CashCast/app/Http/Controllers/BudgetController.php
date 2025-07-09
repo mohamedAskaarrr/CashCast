@@ -14,9 +14,7 @@ class BudgetController extends Controller
 
     public function dashboard()
 {
-    if (!auth()->check()) {
-        return redirect('/login');
-    }
+   
 
     $user = auth()->user();
 
