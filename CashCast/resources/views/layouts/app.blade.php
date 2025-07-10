@@ -1,5 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
+    
 <head>
     <meta charset="UTF-8">
     <title>@yield('title', 'CashCast')</title>
@@ -91,6 +90,42 @@
         {{ session('success') }}
     </div>
 @endif
+<script>
+document.getElementById('transaction-form')?.addEventListener('submit', async function(e) {
+    e.preventDefault();
+
+    const form = e.target;
+    const data = new FormData(form);
+
+    try {
+        const response = await fetch('/transactions', {
+            method: 'POST',
+            headers: {
+                'X-CSRF-TOKEN': document.querySelector('input[name="_token"]').value
+            },
+            body: data
+        });
+
+        const res = await response.json();
+
+        if (response.ok) {
+            form.reset();
+            document.getElementById('modal').style.display = 'none';
+            document.getElementById('toast').innerText = res.message || 'Transaction added!';
+            document.getElementById('toast').style.display = 'block';
+            setTimeout(() => document.getElementById('toast').style.display = 'none', 3000);
+        } else {
+            alert(res.message || 'Something went wrong.');
+        }
+
+    } catch (err) {
+        alert('Unexpected error: ' + err.message);
+    }
+});
+</script>
+
+
+
 
 </body>
 </html>
