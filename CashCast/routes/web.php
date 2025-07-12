@@ -35,5 +35,7 @@ Route::get('/supervisor', [SuperVisorController::class, 'index'])->name('supervi
 
 
 
-Route::post('supervisors/give-permission', [SuperVisorController::class, 'givePermission'])->middleware('role:admin');
+Route::post('supervisors/give-permission', [SuperVisorController::class, 'givePermission'])
+    ->middleware('role:admin')
+    ->name('supervisors.give-permission');
 
