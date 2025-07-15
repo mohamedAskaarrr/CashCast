@@ -26,11 +26,18 @@ class SuperVisorController extends Controller
     }
 
     public function givePermission(Request $request) {
-        $role = \Spatie\Permission\Models\Role::findById($request->role_id);
-        $role->givePermissionTo($request->permission);
-        return back()->with('success', 'Permission added.');
-    }
-    
+        $request->validate([
+            'role_id' => 'required|integer|exists:roles,id',
+            'permission' => 'required|string|exists:permissions,name'
+        ]);
+
+        try {
+            $role = Role::findById($request->role_id);
+            $role->givePermissionTo($request->permission);
+            return back()->with('success', 'Permission added successfully.');
+        } catch (\Exception $e) {
+            return back()->with('error', 'Failed to assign permission: ' . $e->getMessage());
+        }    }  
 
     public function assignPermissionToExistingRole(Request $request) {
         $role = Role::findByName($request->role);

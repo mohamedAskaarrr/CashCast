@@ -31,8 +31,7 @@ Route::post('/transactions', [TransactionController::class, 'store']);
 
 Route::resource('supervisors', SuperVisorController::class)->middleware('role:admin');
 
-Route::get('/supervisor', [SuperVisorController::class, 'index'])->name('supervisors.superVisor');
-
+Route::get('/supervisor', [SuperVisorController::class, 'index'])->middleware('auth')->name('supervisors.superVisor');
 
 
 Route::post('supervisors/give-permission', [SuperVisorController::class, 'givePermission'])
