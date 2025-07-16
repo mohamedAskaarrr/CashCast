@@ -11,30 +11,42 @@
 </p>
 
 
+<p align="center">
+  Smart budgeting web app with predictive analytics built on Laravel.
+  <br>
+  Track expenses, analyze trends, and plan smarter.
+</p>
 
+<p align="center">
+    <a href="#"><img src="https://img.shields.io/badge/status-in%20progress-yellow" alt="Project Status"></a>
+    <a href="#"><img src="https://img.shields.io/badge/build-passing-brightgreen" alt="Build Status"></a>
+    <a href="#"><img src="https://img.shields.io/badge/laravel-11-red" alt="Laravel Version"></a>
+    <a href="#"><img src="https://img.shields.io/badge/license-MIT-blue" alt="License"></a>
+</p>
 
-A modern financial management platform built with Laravel 11+ and powered by the UI System.
+---
 
-## About CashCast
+## 🚀 Features
 
-CashCast is a comprehensive financial management application designed to help users track expenses, manage budgets, and analyze financial data. Built with Laravel 11+ and featuring a modern, responsive interface powered by the Aurora UI System.
+- 📈 Visual spending dashboards
+- 🧠 AI-lite trend predictions
+- 🏷️ Auto-categorized expenses
+- 🔁 Background job processing (Horizon + Redis)
+- ⏱️ Automated analysis (Laravel Scheduler)
 
-## Screenshots
+---
 
-### User Registration
-![Register Page](screenshots/Register.png)
+## ⚙️ Installation
 
-### Dashboard
-![Dashboard](screenshots/Dashboard.png)
+```bash
+git clone https://github.com/mohamedAskaarr/CashCast.git
+cd CashCast
+composer install
+cp .env.example .env
+php artisan key:generate
+php artisan migrate --seed
+php artisan serve
 
-## Key Features
-
-### Financial Management
-- Real-time expense tracking and categorization
-- Budget planning and monitoring
-- Transaction history with advanced filtering
-- Visual reports and analytics
-- Multi-currency support
 
 ### Security & Permissions
 - Role-based access control (RBAC) using Spatie Permission
