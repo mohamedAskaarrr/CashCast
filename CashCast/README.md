@@ -3,7 +3,7 @@
 **Powered by Aurora UI System v1.0**
 
 <p align="center">
-  <img src="cashcast.jpeg" width="400" alt="CashCast Logo">
+  <img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="300" alt="Laravel Logo">
 </p>
 
 <p align="center">
