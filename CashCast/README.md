@@ -1,6 +1,19 @@
-# CashCast - Financial Management Platform
+<p align="center">
+  <a href="https://laravel.com" target="_blank">
+    <img src="https://laravel.com/img/logomark.min.svg" width="120" alt="Laravel Logo">
+  </a>
+</p>
 
-A modern financial management platform built with Laravel 11+ and powered by the Aurora UI System.
+<h1 align="center">CashCast - Financial Management Platform</h1>
+
+<p align="center">
+    <a href="https://laravel.com/docs"><strong>Explore the Laravel docs »</strong></a>
+</p>
+
+
+
+
+A modern financial management platform built with Laravel 11+ and powered by the UI System.
 
 ## About CashCast
 
