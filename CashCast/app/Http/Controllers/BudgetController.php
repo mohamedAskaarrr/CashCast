@@ -19,7 +19,7 @@ class BudgetController extends Controller
 
         // Get user's financial data
         $transactions = $user->transactions()->with('category')->latest()->limit(5)->get();
-        $recentTransactions = $transactions; // Add this for the dashboard view
+        $recentTransactions = $transactions; // For the dashboard view
         $budgets = $user->budgetPlans()->with('category')->get();
         
         // Calculate spending for each budget
@@ -78,8 +78,9 @@ class BudgetController extends Controller
         // Calculate totals
         $totalBudget = $budgets->sum('amount');
         $totalSpent = $budgets->sum('spent_amount');
+        $remainingBudget = $totalBudget - $totalSpent;
         
-        return view('budgets.index', compact('budgets', 'totalBudget', 'totalSpent'));
+        return view('budgets.index', compact('budgets', 'totalBudget', 'totalSpent', 'remainingBudget'));
     }
 
     /**
@@ -92,30 +93,20 @@ class BudgetController extends Controller
     }
 
     /**
-     * Store a new budget (MVP)
+     * Store a newly created budget in storage
      */
     public function store(Request $request)
     {
         $request->validate([
-            'category_id' => 'required|exists:categories,id',
+            'name' => 'required|string|max:255',
             'amount' => 'required|numeric|min:0',
-            'period' => 'required|in:weekly,monthly,quarterly,yearly',
+            'category_id' => 'required|exists:categories,id',
             'start_date' => 'required|date',
             'end_date' => 'required|date|after:start_date',
-            'description' => 'nullable|string|max:500',
-            'is_active' => 'boolean',
         ]);
 
-        Auth::user()->budgetPlans()->create([
-            'category_id' => $request->category_id,
-            'amount' => $request->amount,
-            'period' => $request->period,
-            'start_date' => $request->start_date,
-            'end_date' => $request->end_date,
-            'description' => $request->description,
-            'is_active' => $request->boolean('is_active', true),
-            'spent_amount' => 0,
-        ]);
+        $user = Auth::user();
+        $user->budgetPlans()->create($request->all());
 
         return redirect()->route('budgets.index')->with('success', 'Budget created successfully!');
     }
@@ -125,28 +116,28 @@ class BudgetController extends Controller
      */
     public function show(BudgetPlan $budget)
     {
-        // Ensure the budget belongs to the authenticated user
+        // Check if user owns this budget
         if ($budget->user_id !== Auth::id()) {
-            abort(403);
+            abort(403, 'Unauthorized action.');
         }
-
-        // Get recent transactions for this budget's category
-        $recentTransactions = Auth::user()->transactions()
-            ->where('type', 'expense')
-            ->where('category_id', $budget->category_id)
-            ->whereBetween('transaction_date', [$budget->start_date, $budget->end_date])
-            ->latest()
-            ->limit(5)
-            ->get();
-
-        // Calculate current spending
-        $budget->spent_amount = Auth::user()->transactions()
+        
+        $budget->load('category');
+        
+        // Calculate spending for this budget
+        $budget->spent_amount = $budget->user->transactions()
             ->where('type', 'expense')
             ->where('category_id', $budget->category_id)
             ->whereBetween('transaction_date', [$budget->start_date, $budget->end_date])
             ->sum('amount');
+        
+        // Get related transactions
+        $transactions = $budget->user->transactions()
+            ->where('category_id', $budget->category_id)
+            ->whereBetween('transaction_date', [$budget->start_date, $budget->end_date])
+            ->latest()
+            ->get();
 
-        return view('budgets.show', compact('budget', 'recentTransactions'));
+        return view('budgets.show', compact('budget', 'transactions'));
     }
 
     /**
@@ -154,145 +145,94 @@ class BudgetController extends Controller
      */
     public function edit(BudgetPlan $budget)
     {
-        // Ensure the budget belongs to the authenticated user
+        // Check if user owns this budget
         if ($budget->user_id !== Auth::id()) {
-            abort(403);
+            abort(403, 'Unauthorized action.');
         }
-
+        
         $categories = Category::all();
         return view('budgets.edit', compact('budget', 'categories'));
     }
 
     /**
-     * Update the specified budget
+     * Update the specified budget in storage
      */
     public function update(Request $request, BudgetPlan $budget)
     {
-        // Ensure the budget belongs to the authenticated user
+        // Check if user owns this budget
         if ($budget->user_id !== Auth::id()) {
-            abort(403);
+            abort(403, 'Unauthorized action.');
         }
-
+        
         $request->validate([
-            'category_id' => 'required|exists:categories,id',
+            'name' => 'required|string|max:255',
             'amount' => 'required|numeric|min:0',
-            'period' => 'required|in:weekly,monthly,quarterly,yearly',
+            'category_id' => 'required|exists:categories,id',
             'start_date' => 'required|date',
             'end_date' => 'required|date|after:start_date',
-            'description' => 'nullable|string|max:500',
-            'is_active' => 'boolean',
         ]);
 
-        $budget->update([
-            'category_id' => $request->category_id,
-            'amount' => $request->amount,
-            'period' => $request->period,
-            'start_date' => $request->start_date,
-            'end_date' => $request->end_date,
-            'description' => $request->description,
-            'is_active' => $request->boolean('is_active', true),
-        ]);
+        $budget->update($request->all());
 
         return redirect()->route('budgets.index')->with('success', 'Budget updated successfully!');
     }
 
     /**
-     * Remove the specified budget
+     * Remove the specified budget from storage
      */
     public function destroy(BudgetPlan $budget)
     {
-        // Ensure the budget belongs to the authenticated user
+        // Check if user owns this budget
         if ($budget->user_id !== Auth::id()) {
-            abort(403);
+            abort(403, 'Unauthorized action.');
         }
-
+        
         $budget->delete();
 
         return redirect()->route('budgets.index')->with('success', 'Budget deleted successfully!');
     }
 
     /**
-     * Display reports page (MVP)
+     * Display reports page
      */
-    public function reports(Request $request)
+    public function reports()
     {
         $user = Auth::user();
         
-        // Determine date range based on period
-        $period = $request->get('period', 'this_month');
-        $startDate = null;
-        $endDate = null;
+        // Monthly data for charts
+        $monthlyData = $user->transactions()
+            ->selectRaw('MONTH(transaction_date) as month, type, SUM(amount) as total')
+            ->whereYear('transaction_date', now()->year)
+            ->groupBy('month', 'type')
+            ->get();
         
-        switch ($period) {
-            case 'this_month':
-                $startDate = now()->startOfMonth();
-                $endDate = now()->endOfMonth();
-                break;
-            case 'last_month':
-                $startDate = now()->subMonth()->startOfMonth();
-                $endDate = now()->subMonth()->endOfMonth();
-                break;
-            case 'this_year':
-                $startDate = now()->startOfYear();
-                $endDate = now()->endOfYear();
-                break;
-            case 'last_year':
-                $startDate = now()->subYear()->startOfYear();
-                $endDate = now()->subYear()->endOfYear();
-                break;
-            case 'custom':
-                $startDate = $request->get('start_date') ? Carbon::parse($request->get('start_date')) : now()->startOfMonth();
-                $endDate = $request->get('end_date') ? Carbon::parse($request->get('end_date')) : now()->endOfMonth();
-                break;
-        }
-        
-        // Get financial data for the period
-        $totalIncome = $user->transactions()
-            ->where('type', 'income')
-            ->whereBetween('transaction_date', [$startDate, $endDate])
-            ->sum('amount');
-            
-        $totalExpenses = $user->transactions()
-            ->where('type', 'expense')
-            ->whereBetween('transaction_date', [$startDate, $endDate])
-            ->sum('amount');
-            
-        $netIncome = $totalIncome - $totalExpenses;
-        
-        $totalTransactions = $user->transactions()
-            ->whereBetween('transaction_date', [$startDate, $endDate])
-            ->count();
-
-        // Get top categories
-        $topCategories = $user->transactions()
+        // Category breakdown
+        $categoryData = $user->transactions()
             ->join('categories', 'transactions.category_id', '=', 'categories.id')
-            ->where('transactions.type', 'expense')
-            ->whereBetween('transactions.transaction_date', [$startDate, $endDate])
-            ->selectRaw('categories.name, SUM(transactions.amount) as total_amount, COUNT(*) as transactions_count')
-            ->groupBy('categories.id', 'categories.name')
-            ->orderBy('total_amount', 'desc')
-            ->limit(5)
+            ->selectRaw('categories.name, SUM(amount) as total')
+            ->where('type', 'expense')
+            ->groupBy('categories.name')
             ->get();
-
-        // Get monthly trend
-        $monthlyTrend = $user->transactions()
-            ->selectRaw('DATE_FORMAT(transaction_date, "%Y-%m") as month, 
-                        DATE_FORMAT(transaction_date, "%M %Y") as month_name,
-                        SUM(CASE WHEN type = "income" THEN amount ELSE 0 END) as total_income,
-                        SUM(CASE WHEN type = "expense" THEN amount ELSE 0 END) as total_expenses,
-                        COUNT(*) as transactions_count')
-            ->whereBetween('transaction_date', [$startDate, $endDate])
-            ->groupBy('month', 'month_name')
-            ->orderBy('month')
+        
+        // Recent transactions
+        $recentTransactions = $user->transactions()
+            ->with('category')
+            ->latest()
+            ->limit(10)
             ->get();
-
+        
+        // Summary stats
+        $totalIncome = $user->transactions()->where('type', 'income')->sum('amount');
+        $totalExpenses = $user->transactions()->where('type', 'expense')->sum('amount');
+        $totalBalance = $totalIncome - $totalExpenses;
+        
         return view('reports.index', compact(
-            'totalIncome', 
-            'totalExpenses', 
-            'netIncome',
-            'totalTransactions',
-            'topCategories',
-            'monthlyTrend'
+            'monthlyData', 
+            'categoryData', 
+            'recentTransactions',
+            'totalIncome',
+            'totalExpenses',
+            'totalBalance'
         ));
     }
 }
