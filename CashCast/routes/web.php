@@ -3,58 +3,45 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UsersController;
 use App\Http\Controllers\BudgetController;
-use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\SuperVisorController;
-use Spatie\Permission\Models\Role;
 
+// Redirect root to dashboard
 Route::get('/', function () {
     return redirect('/dashboard');
 });
 
+// Authentication Routes (MVP)
+Route::middleware('guest')->group(function () {
+    Route::get('/login', [UsersController::class, 'login'])->name('login');
+    Route::post('/login', [UsersController::class, 'doLogin']);
+    Route::get('/register', [UsersController::class, 'register'])->name('register');
+    Route::post('/register', [UsersController::class, 'doRegister']);
+});
 
-Route::get('/login', [UsersController::class, 'login'])->name('login');
-Route::post('/login', [UsersController::class, 'doLogin']);
-Route::get('/register', [UsersController::class, 'register'])->name('register');
-Route::post('/register', [UsersController::class, 'doRegister']);
-Route::post('/logout', [UsersController::class, 'logout'])->name('logout');
+Route::post('/logout', [UsersController::class, 'logout'])->name('logout')->middleware('auth');
 
-Route::middleware('auth')->get('/dashboard', [BudgetController::class, 'dashboard']);
-
-// 🌟 Aurora UI System Demo Route
-Route::middleware('auth')->get('/aurora-demo', function () {
-    return view('aurora-demo');
-})->name('aurora.demo');
-
-
-Route::post('/transactions', [TransactionController::class, 'store']);
-
-
-
-
-Route::resource('supervisors', SuperVisorController::class)->middleware('role:admin');
-
-Route::get('/supervisor', [SuperVisorController::class, 'index'])->middleware('auth')->name('supervisors.superVisor');
-
-
-Route::post('supervisors/give-permission', [SuperVisorController::class, 'givePermission'])
-    ->middleware('role:admin')
-    ->name('supervisors.give-permission');
-
-// Test route to debug permissions
-Route::get('/debug-permissions', function() {
-    $permissions = \Spatie\Permission\Models\Permission::all();
-    $roles = \Spatie\Permission\Models\Role::all();
+// Protected Routes (MVP)
+Route::middleware('auth')->group(function () {
+    // Dashboard
+    Route::get('/dashboard', [BudgetController::class, 'dashboard'])->name('dashboard');
     
-    echo "<h3>Permissions:</h3>";
-    foreach($permissions as $p) {
-        echo $p->id . ': ' . $p->name . '<br>';
-    }
+    // Transactions - Full CRUD
+    Route::resource('transactions', TransactionController::class);
     
-    echo "<h3>Roles:</h3>";
-    foreach($roles as $r) {
-        echo $r->id . ': ' . $r->name . ' - Permissions: ' . $r->permissions->pluck('name')->implode(', ') . '<br>';
-    }
-})->middleware('auth');
+    // Budgets - Full CRUD
+    Route::resource('budgets', BudgetController::class);
+    
+    // Reports
+    Route::get('/reports', [BudgetController::class, 'reports'])->name('reports.index');
+});
+
+// Admin/Supervisor Routes (MVP)
+Route::middleware(['auth', 'role:admin'])->group(function () {
+    Route::get('/supervisor', [SuperVisorController::class, 'index'])->name('supervisor.index');
+    Route::resource('supervisors', SuperVisorController::class);
+    Route::post('supervisors/give-permission', [SuperVisorController::class, 'givePermission'])
+        ->name('supervisors.give-permission');
+});
 
 
