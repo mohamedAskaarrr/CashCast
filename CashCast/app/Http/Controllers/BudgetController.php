@@ -19,6 +19,7 @@ class BudgetController extends Controller
 
         // Get user's financial data
         $transactions = $user->transactions()->with('category')->latest()->limit(5)->get();
+        $recentTransactions = $transactions; // Add this for the dashboard view
         $budgets = $user->budgetPlans()->with('category')->get();
         
         // Calculate spending for each budget
@@ -47,6 +48,7 @@ class BudgetController extends Controller
 
         return view('dashboard-mvp', compact(
             'transactions', 
+            'recentTransactions',
             'budgets', 
             'totalBalance',
             'totalIncome',
