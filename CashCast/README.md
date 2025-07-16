@@ -3,7 +3,7 @@
 **Powered by Aurora UI System v1.0**
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="300" alt="Laravel Logo">
+  <img src="cashcast.jpeg" width="400" alt="CashCast Logo">
 </p>
 
 <p align="center">
@@ -23,9 +23,24 @@ CashCast is a modern financial management platform built with Laravel 11+ and po
 - 🚀 **Performance**: Hardware-accelerated animations and optimized rendering
 - 🎨 **Modern UI Components**: Glass morphism, floating particles, and gradient effects
 
+## 📸 Screenshots
+
+### 🔐 User Registration
+
+*Beautiful registration form with AI assistant and emerald gradient theme*
+
+![Register Page](screenshots/register.png)
+
+### 🏠 Dashboard
+
+*Intuitive dashboard with financial overview and modern UI*
+
+![Dashboard](screenshots/dashboard.png)
+
 ## 🎯 Key Features
 
 ### 💸 **Financial Management**
+
 - Real-time expense tracking and categorization
 - Budget planning and monitoring
 - Transaction history with advanced filtering
@@ -33,12 +48,14 @@ CashCast is a modern financial management platform built with Laravel 11+ and po
 - Multi-currency support
 
 ### 🔐 **Security & Permissions**
+
 - Role-based access control (RBAC) using Spatie Permission
 - Supervisor dashboard for administrative tasks
 - Secure user authentication and authorization
 - Permission management system
 
 ### 🎨 **Aurora UI System**
+
 - Modern, animated interface with aurora-inspired design
 - Interactive charts and data visualizations
 - Smooth scroll animations and transitions
@@ -48,6 +65,7 @@ CashCast is a modern financial management platform built with Laravel 11+ and po
 ## 🛠️ Technology Stack
 
 ### 🔧 **Backend**
+
 - **Laravel 11+**: Modern PHP framework with latest features
 - **Spatie Permission**: Role and permission management
 - **SQLite**: Lightweight, fast database for development
@@ -182,6 +200,27 @@ The **Aurora UI System** is our custom-built design framework that powers the en
 - Responsive charts
 - Gesture support
 - Fast loading
+
+## 🎨 UI/UX Improvements
+
+### Recent Design Updates
+
+- **🔐 Enhanced Authentication Pages**: Complete redesign of login and register pages with improved alignment, visual balance, and distinct color schemes
+- **🤖 AI Assistant Integration**: Unique SVG illustrations for login (blue theme) and register (emerald theme) pages with personalized greetings
+- **🌈 Color Harmony**: Carefully crafted color palettes for better visual distinction between pages
+- **📱 Responsive Layout**: Improved spacing, typography, and form structure for all devices
+- **✨ Interactive Elements**: Enhanced hover effects, smooth transitions, and micro-interactions
+- **🎯 Better Navigation**: Optimized button placement and user flow between authentication pages
+
+### Design Philosophy
+
+The Aurora UI System follows modern design principles:
+
+- **Visual Hierarchy**: Clear information structure with proper spacing and typography
+- **Consistent Theming**: Each page has its own color identity while maintaining brand consistency
+- **Accessibility First**: WCAG-compliant design with proper contrast ratios and keyboard navigation
+- **Performance Optimized**: Lightweight animations and efficient rendering
+- **Mobile-First**: Responsive design that works seamlessly across all devices
 
 ## 🧪 Testing
 
