@@ -182,6 +182,8 @@ php artisan cache:clear
 
 ## Documentation
 
+- **[Project Wiki](WIKI.md)**: Complete troubleshooting guide with errors, bugs, and solutions
+- **[Quick Troubleshooting](TROUBLESHOOTING.md)**: Fast fixes for common issues
 - **[Aurora UI System Documentation](AURORA_UI_SYSTEM.md)**: Complete design system guide
 - **[Laravel Documentation](https://laravel.com/docs)**: Framework documentation
 - **[Spatie Permission](https://spatie.be/docs/laravel-permission)**: Permission management
