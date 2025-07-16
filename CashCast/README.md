@@ -29,13 +29,13 @@ CashCast is a modern financial management platform built with Laravel 11+ and po
 
 *Beautiful registration form with AI assistant and emerald gradient theme*
 
-![Register Page](screenshots/register.png)
+![Register Page](screenshots/Register.png)
 
 ### 🏠 Dashboard
 
 *Intuitive dashboard with financial overview and modern UI*
 
-![Dashboard](screenshots/dashboard.png)
+![Dashboard](screenshots/Dashboard.png)
 
 ## 🎯 Key Features
 
