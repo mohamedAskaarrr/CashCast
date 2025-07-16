@@ -21,7 +21,10 @@ Route::post('/logout', [UsersController::class, 'logout'])->name('logout');
 
 Route::middleware('auth')->get('/dashboard', [BudgetController::class, 'dashboard']);
 
-
+// 🌟 Aurora UI System Demo Route
+Route::middleware('auth')->get('/aurora-demo', function () {
+    return view('aurora-demo');
+})->name('aurora.demo');
 
 
 Route::post('/transactions', [TransactionController::class, 'store']);
@@ -37,4 +40,21 @@ Route::get('/supervisor', [SuperVisorController::class, 'index'])->middleware('a
 Route::post('supervisors/give-permission', [SuperVisorController::class, 'givePermission'])
     ->middleware('role:admin')
     ->name('supervisors.give-permission');
+
+// Test route to debug permissions
+Route::get('/debug-permissions', function() {
+    $permissions = \Spatie\Permission\Models\Permission::all();
+    $roles = \Spatie\Permission\Models\Role::all();
+    
+    echo "<h3>Permissions:</h3>";
+    foreach($permissions as $p) {
+        echo $p->id . ': ' . $p->name . '<br>';
+    }
+    
+    echo "<h3>Roles:</h3>";
+    foreach($roles as $r) {
+        echo $r->id . ': ' . $r->name . ' - Permissions: ' . $r->permissions->pluck('name')->implode(', ') . '<br>';
+    }
+})->middleware('auth');
+
 
