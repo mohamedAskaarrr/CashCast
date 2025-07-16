@@ -1,27 +1,52 @@
-# CashCast - Financial Management Platform
+<p align="center">
+  <a href="https://laravel.com" target="_blank">
+    <img src="https://laravel.com/img/logomark.min.svg" width="120" alt="Laravel Logo">
+  </a>
+</p>
 
-A modern financial management platform built with Laravel 11+ and powered by the Aurora UI System.
+<h1 align="center">CashCast - Financial Management Platform</h1>
 
-## About CashCast
+<p align="center">
+    <a href="https://laravel.com/docs"><strong>Explore the Laravel docs »</strong></a>
+</p>
 
-CashCast is a comprehensive financial management application designed to help users track expenses, manage budgets, and analyze financial data. Built with Laravel 11+ and featuring a modern, responsive interface powered by the Aurora UI System.
 
-## Screenshots
+<p align="center">
+  Smart budgeting web app with predictive analytics built on Laravel.
+  <br>
+  Track expenses, analyze trends, and plan smarter.
+</p>
 
-### User Registration
-![Register Page](screenshots/Register.png)
+<p align="center">
+    <a href="#"><img src="https://img.shields.io/badge/status-in%20progress-yellow" alt="Project Status"></a>
+    <a href="#"><img src="https://img.shields.io/badge/build-passing-brightgreen" alt="Build Status"></a>
+    <a href="#"><img src="https://img.shields.io/badge/laravel-11-red" alt="Laravel Version"></a>
+    <a href="#"><img src="https://img.shields.io/badge/license-MIT-blue" alt="License"></a>
+</p>
 
-### Dashboard
-![Dashboard](screenshots/Dashboard.png)
+---
 
-## Key Features
+## 🚀 Features
 
-### Financial Management
-- Real-time expense tracking and categorization
-- Budget planning and monitoring
-- Transaction history with advanced filtering
-- Visual reports and analytics
-- Multi-currency support
+- 📈 Visual spending dashboards
+- 🧠 AI-lite trend predictions
+- 🏷️ Auto-categorized expenses
+- 🔁 Background job processing (Horizon + Redis)
+- ⏱️ Automated analysis (Laravel Scheduler)
+
+---
+
+## ⚙️ Installation
+
+```bash
+git clone https://github.com/mohamedAskaarr/CashCast.git
+cd CashCast
+composer install
+cp .env.example .env
+php artisan key:generate
+php artisan migrate --seed
+php artisan serve
+
 
 ### Security & Permissions
 - Role-based access control (RBAC) using Spatie Permission
