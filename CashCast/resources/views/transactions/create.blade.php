@@ -4,72 +4,50 @@
 
 @section('content')
 <div class="container mx-auto px-4 py-8">
-    <!-- Page Header with Glassmorphism -->
-    <div class="bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg rounded-2xl shadow-xl border border-white/20 dark:border-gray-700/30 p-6 mb-6">
-        <div class="flex justify-between items-center">
-            <div>
-                <h1 class="text-3xl font-bold text-gray-800 dark:text-white">Add Transaction</h1>
-                <p class="text-gray-600 dark:text-gray-300 mt-1">Record a new income or expense</p>
-            </div>
-            <a href="{{ route('transactions.index') }}" class="bg-gradient-to-r from-gray-600 to-gray-700 hover:from-gray-700 hover:to-gray-800 text-white px-6 py-3 rounded-xl inline-flex items-center transform transition-all duration-300 hover:scale-105 shadow-lg">
-                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
-                </svg>
-                Back to Transactions
-            </a>
-        </div>
+    <div class="flex justify-between items-center mb-6">
+        <h1 class="text-3xl font-bold text-gray-800">Add Transaction</h1>
+        <a href="{{ route('transactions.index') }}" class="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg inline-flex items-center">
+            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+            </svg>
+            Back to Transactions
+        </a>
     </div>
 
-    <!-- Form with Glassmorphism -->
-    <div class="bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg rounded-2xl shadow-xl border border-white/20 dark:border-gray-700/30 p-8">
+    <div class="bg-white rounded-lg shadow p-6">
         <form method="POST" action="{{ route('transactions.store') }}">
             @csrf
             
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <!-- Transaction Type -->
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">Type *</label>
-                    <div class="flex space-x-6">
-                        <label class="flex items-center group cursor-pointer">
-                            <input type="radio" name="type" value="income" class="mr-3 text-green-600 focus:ring-green-500" {{ old('type') === 'income' ? 'checked' : '' }} required>
-                            <span class="text-green-600 dark:text-green-400 font-medium group-hover:text-green-500 transition-colors">
-                                <svg class="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path>
-                                </svg>
-                                Income
-                            </span>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Type *</label>
+                    <div class="flex space-x-4">
+                        <label class="flex items-center">
+                            <input type="radio" name="type" value="income" class="mr-2" {{ old('type') === 'income' ? 'checked' : '' }} required>
+                            <span class="text-green-600 font-medium">Income</span>
                         </label>
-                        <label class="flex items-center group cursor-pointer">
-                            <input type="radio" name="type" value="expense" class="mr-3 text-red-600 focus:ring-red-500" {{ old('type') === 'expense' ? 'checked' : '' }} required>
-                            <span class="text-red-600 dark:text-red-400 font-medium group-hover:text-red-500 transition-colors">
-                                <svg class="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 17h8m0 0V9m0 8l-8-8-4 4-6-6"></path>
-                                </svg>
-                                Expense
-                            </span>
+                        <label class="flex items-center">
+                            <input type="radio" name="type" value="expense" class="mr-2" {{ old('type') === 'expense' ? 'checked' : '' }} required>
+                            <span class="text-red-600 font-medium">Expense</span>
                         </label>
                     </div>
                     @error('type')
-                        <p class="mt-2 text-sm text-red-600 dark:text-red-400 flex items-center">
-                            <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
-                            </svg>
-                            {{ $message }}
-                        </p>
+                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                     @enderror
                 </div>
 
                 <!-- Amount -->
                 <div>
-                    <label for="amount" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Amount *</label>
+                    <label for="amount" class="block text-sm font-medium text-gray-700 mb-2">Amount *</label>
                     <div class="relative">
-                        <span class="absolute left-4 top-3 text-gray-500 dark:text-gray-400">$</span>
+                        <span class="absolute left-3 top-2 text-gray-500">$</span>
                         <input type="number" 
                                id="amount" 
                                name="amount" 
                                value="{{ old('amount') }}" 
                                step="0.01" 
-                               min="0"
+                               min="0" 
                                class="w-full pl-8 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 {{ $errors->has('amount') ? 'border-red-500' : '' }}" 
                                required>
                     </div>

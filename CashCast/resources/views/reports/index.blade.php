@@ -29,7 +29,7 @@
                     <option value="custom" {{ request('period') === 'custom' ? 'selected' : '' }}>Custom Range</option>
                 </select>
             </div>
-            <div class="flex-1 min-w-48" id="custom-dates" style="display: {{ request('period') === 'custom' ? 'block' : 'none' }};">
+            <div class="flex-1 min-w-48" id="custom-dates" style="display: {{ request('period') === 'custom' ? 'flex' : 'none' }};">
                 <label class="block text-sm font-medium text-gray-700 mb-2">Date Range</label>
                 <div class="flex space-x-2">
                     <input type="date" name="start_date" value="{{ request('start_date') }}" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
@@ -191,7 +191,7 @@
 // Period selector
 document.querySelector('select[name="period"]').addEventListener('change', function() {
     const customDates = document.getElementById('custom-dates');
-    customDates.style.display = this.value === 'custom' ? 'block' : 'none';
+    customDates.style.display = this.value === 'custom' ? 'flex' : 'none';
 });
 
 // Income vs Expenses Chart
@@ -201,7 +201,7 @@ new Chart(incomeExpenseCtx, {
     data: {
         labels: ['Income', 'Expenses'],
         datasets: [{
-            data: [{{ $totalIncome }}, {{ $totalExpenses }}],
+            data: [{{ $totalIncome ?? 0 }}, {{ $totalExpenses ?? 0 }}],
             backgroundColor: ['#10B981', '#EF4444'],
             borderWidth: 0
         }]
@@ -222,10 +222,10 @@ const categoryCtx = document.getElementById('categoryChart').getContext('2d');
 new Chart(categoryCtx, {
     type: 'bar',
     data: {
-        labels: {!! json_encode($topCategories->pluck('name')) !!},
+        labels: @json($topCategories->pluck('name')),
         datasets: [{
             label: 'Amount',
-            data: {!! json_encode($topCategories->pluck('total_amount')) !!},
+            data: @json($topCategories->pluck('total_amount')),
             backgroundColor: '#3B82F6',
             borderColor: '#1D4ED8',
             borderWidth: 1
